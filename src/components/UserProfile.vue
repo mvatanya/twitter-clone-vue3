@@ -7,27 +7,7 @@
         <strong>Followers:</strong>
         {{followers}}
       </div>
-      <!-- dynamic style class example -->
-      <form class="user-profile_create-tweet" @submit.prevent="createNewTweet" :class="{ '--exceeded': newTweetCharacterCount > 180 }">
-        <label for="newTweet">
-          <strong>New Tweet</strong>
-          ({{ newTweetCharacterCount }}/180)
-        </label>
-        <textarea id="newTweet" rows="4" v-model="newTweetContent"></textarea>
-        <div class="user-profile__create-tweet-type">
-          <label for="newTweetType">
-            <strong>Type:</strong>
-          </label>
-          <select id="newTweetType" v-model="selectedTweetType">
-            <option
-              :value="option.value"
-              v-for="(option, index) in tweetTypes"
-              :key="index"
-            >{{option.name}}</option>
-          </select>
-        </div>
-        <button :disabled="newTweetCharacterCount > 180">Tweet!</button>
-      </form>
+      <CreateTweetPanel @add-tweet="addTweet"/>
     </div>
     <div class="user-profile__tweets-wrapper">
       <TweetItem
@@ -44,18 +24,13 @@
 
 <script>
 import TweetItem from "./TweetItem.vue";
+import CreateTweetPanel from "./CreateTweetPanel.vue";
 
 export default {
   name: "UserProfile",
-  components: { TweetItem },
+  components: { TweetItem, CreateTweetPanel },
   data() {
     return {
-      newTweetContent: "",
-      selectedTweetType: "instant",
-      tweetTypes: [
-        { value: "draft", name: "Draft" },
-        { value: "instant", name: "Instant Tweet" },
-      ],
       followers: 0,
       user: {
         id: 1,
@@ -80,11 +55,6 @@ export default {
       }
     },
   },
-  computed: {
-    newTweetCharacterCount() {
-      return this.newTweetContent.length;
-    }
-  },
   methods: {
     followUser() {
       this.followers++;
@@ -92,15 +62,9 @@ export default {
     toggleFavorite(id) {
       console.log(`Favorite Tweet #${id}`);
     },
-    createNewTweet() {
-      if (this.newTweetContent && this.selectedTweetType !== "draft") {
-        this.user.tweets.unshift({
-          id: this.user.tweets.length + 1,
-          content: this.newTweetContent,
-        });
-        this.newTweetContent = "";
-      }
-    },
+    addTweet(tweet) {
+      this.user.tweets.unshift({ id: this.user.tweets.length + 1, content: tweet });
+    }
   },
   mounted() {
     this.followUser();
@@ -129,24 +93,12 @@ export default {
     }
 
     .user-profile__admin-badge {
-      background: rebeccapurple;
+      background: deeppink;
       color: white;
       border-radius: 5px;
       margin-right: auto;
       padding: 0 10px;
       font-weight: bold;
-    }
-
-    .user-profile_create-tweet {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-
-      &.--exceeded {
-        color: red;
-        border-color: red;
-
-      }
     }
   }
 

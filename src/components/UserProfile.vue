@@ -2,17 +2,31 @@
   <div class="user-profile">
     <div class="user-profile__user-panel">
       <h1 class="user-profile__username">@{{ user.username }}</h1>
+      <div class="user-profile__admin-badge" v-if="user.isAdmin">Admin</div>
       <div class="user-profile__follower-count">
         <strong>Followers:</strong>
         {{followers}}
       </div>
     </div>
+    <div class="user-profile__tweets-wrapper">
+      <TweetItem
+        v-for="tweet in user.tweets"
+        :key="tweet.id"
+        :username="user.username"
+        :tweet="tweet"
+        @favorite="toggleFavorite"
+      />
+      <!-- @favorite == whenever this favorite event is emitted from the child, call toggleFavorite method -->
+    </div>
   </div>
 </template>
 
 <script>
+import TweetItem from "./TweetItem.vue";
+
 export default {
   name: "UserProfile",
+  components: { TweetItem },
   data() {
     return {
       followers: 0,
@@ -23,6 +37,10 @@ export default {
         lastName: "Romney",
         email: "mromney@email.com",
         isAdmin: true,
+        tweets: [
+          { id: 1, content: "This is an example of tweet content." },
+          { id: 2, content: "This is an the second example of tweet content." },
+        ],
       },
     };
   },
@@ -43,6 +61,9 @@ export default {
   methods: {
     followUser() {
       this.followers++;
+    },
+    toggleFavorite(id) {
+      console.log(`Favorite Tweet #${id}`);
     },
   },
   mounted() {
@@ -66,10 +87,17 @@ export default {
   padding: 20px;
   background-color: white;
   border-radius: 5px;
-  border: 1px solid #DFE3EB;
+  border: 1px solid #dfe3eb;
 }
-
+.user-profile__admin-badge {
+  background: rebeccapurple;
+  color: white;
+  border-radius: 5px;
+  margin-right: auto;
+  padding: 0 10px;
+  font-weight: bold;
+}
 h1 {
-  margin: 0
+  margin: 0;
 }
 </style>

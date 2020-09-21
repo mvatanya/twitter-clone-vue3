@@ -5,7 +5,8 @@
 </template>
 
 <script>
-
+// currently vite.config doesn't work so has to import this global base stylesheet here
+import "./styles/base.scss"
 import UserProfile from "./components/UserProfile.vue"
 
 export default {
@@ -14,7 +15,7 @@ export default {
  }
 </script>
 
-<style>
+<style lang="scss">
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
